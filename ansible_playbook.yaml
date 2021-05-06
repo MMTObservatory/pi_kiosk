@@ -1,0 +1,5 @@
+- name: Ensure we have sleep disabled in /etc/lightdm/lightdm.conf
+  ansible.builtin.lineinfile:
+    path: /etc/lightdm/lightdm.conf
+    regexp: '^#xserver-command=X'
+    line: 'xserver-command=X -s 0 -dpms'
