@@ -1,5 +1,15 @@
-- name: Ensure we have sleep disabled in /etc/lightdm/lightdm.conf
-  ansible.builtin.lineinfile:
-    path: /etc/lightdm/lightdm.conf
-    regexp: '^#xserver-command=X'
-    line: 'xserver-command=X -s 0 -dpms'
+---
+  - name: Mods to /etc/lightdm/lightdm.conf to prevent RPi from going to sleep.
+    hosts: localhost
+
+    tasks:
+      - name: Add line to the lightdm.conf file if it doesn't exist
+        become: yes
+        become_user: root
+        lineinfile:
+          path: /etc/lightdm/lightdm.conf
+          backrefs: yes     
+          # The String to Search
+          regexp: "^#xserver-command=X"
+          # The String to Replace
+          line: "xserver-command=X: -s 0 -dpms"
