@@ -1,0 +1,32 @@
+---
+  - name: Modifies /etc/lightdm/lightdm.conf to prevent RPi from going to sleep.
+    hosts: localhost 
+
+    tasks:
+
+        - name: Is lightdm already running?
+          shell: service lightdm status warn=false
+          register: _svc_lightdm
+          failed_when: _svc_lightdm.rc != 0 and ("unrecognized service" not in _svc_lightdm.stderr)
+          ignore_errors: true
+
+        - name: Replace xserver-command line in lightdm.conf file if needed
+          # *.conf files are owned by user root
+          become: yes
+          become_user: root
+          lineinfile:
+              path: /etc/lightdm/lightdm.conf
+              # Only do if not already done
+              backrefs: yes     
+              # The commented line to match.  
+              # Note: it need to be in the [Seat:*] section of the conf file.
+              regexp: "^#xserver-command=X"
+              # The line to replace it with
+              line: "xserver-command=X: -s 0 -dpms"
+          register: lightdm_conf
+
+        - name: Restart lightdm
+          service:
+              name=lightdm 
+              state=restarted
+          when: "_svc_lightdm.rc == 0" and lightdm_conf.changed
