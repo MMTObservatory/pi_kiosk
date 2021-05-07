@@ -9,8 +9,13 @@ Follow the tutorial to install the needed dependencies and configure `kiosk.serv
 Then copy one of the bash scripts to `/home/pi/kiosk.sh` and, if needed, customize the URL or URLs. It is recommended to install the
 `xsession` file as `/home/pi/.xsession` so that the kiosk browser is the only window running on the display.
 
-
 ## Notes
+
+* JDG, 2021-05-07:  I've added a lightdm.conf file under ./lightdm to this repo.  Copy this file to /etc/lightdm/ to prevent the RPi from going to sleep.
+
+* JDG, 2021-05-07:  I've also added an ansible playbook under ./ansible that will modify the /etc/lightdm/lightdm.conf file, if needed, to prevent the RPi from going to sleep.  If you copy the file in the previous bullet, you don't need to run the ansible playbook.
+
+* JDG, 2021-05-07: The chromium-browser command-line options have been modified to eliminated user input.  This allows the weather videos to start automatically without user input.
 
 * The locations of `Boot Options` and `Desktop Autologin` have moved in recent versions of `raspi-config`, but they are clearly labeled.
 
